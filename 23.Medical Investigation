@@ -1,0 +1,38 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import ttest_ind
+
+# Load dataset
+df = pd.read_csv('/content/clinical_trial_data.csv')
+
+control = df['Control_Group']
+treatment = df['Treatment_Group']
+
+# Hypothesis testing (Independent t-test)
+t_stat, p_value = ttest_ind(treatment, control)
+
+# Output results
+print("Mean (Control Group):", control.mean())
+print("Mean (Treatment Group):", treatment.mean())
+print("t-statistic:", t_stat)
+print("p-value:", p_value)
+
+# Decision
+alpha = 0.05
+if p_value < alpha:
+    print("Result: Statistically significant difference (Reject H0)")
+else:
+    print("Result: No statistically significant difference (Fail to reject H0)")
+
+# Visualization
+plt.figure()
+plt.hist(control, bins=15, alpha=0.6, label='Control Group')
+plt.hist(treatment, bins=15, alpha=0.6, label='Treatment Group')
+plt.axvline(control.mean(), linestyle='dashed', linewidth=2)
+plt.axvline(treatment.mean(), linestyle='dashed', linewidth=2)
+plt.title("Clinical Trial Results\np-value = " + str(round(p_value, 5)))
+plt.xlabel("Response Measure")
+plt.ylabel("Frequency")
+plt.legend()
+plt.show()
