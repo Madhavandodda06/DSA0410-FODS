@@ -1,0 +1,48 @@
+import pandas as pd
+import numpy as np
+import math
+
+# Load dataset
+df = pd.read_csv('/content/customer_reviews.csv')
+
+# Extract ratings
+ratings = df['Rating']
+
+# User inputs
+confidence_level = float(input("Enter confidence level (e.g., 0.95): "))
+
+# Sample statistics
+mean_rating = ratings.mean()
+std_rating = ratings.std(ddof=1)
+n = len(ratings)
+
+# Z-score selection
+if confidence_level == 0.90:
+    z = 1.645
+elif confidence_level == 0.95:
+    z = 1.96
+elif confidence_level == 0.99:
+    z = 2.576
+else:
+    z = 1.96
+
+# Margin of error
+margin_error = z * (std_rating / math.sqrt(n))
+
+# Confidence interval
+lower = mean_rating - margin_error
+upper = mean_rating + margin_error
+
+# Output
+print("\nAverage Rating (Point Estimate):", mean_rating)
+print("Confidence Interval for True Mean Rating:")
+print("Lower Bound:", lower)
+print("Upper Bound:", upper)
+
+# Customer satisfaction level (simple interpretation)
+if mean_rating >= 4:
+    print("Customer Satisfaction Level: High")
+elif mean_rating >= 3:
+    print("Customer Satisfaction Level: Moderate")
+else:
+    print("Customer Satisfaction Level: Low")
