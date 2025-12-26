@@ -1,0 +1,46 @@
+import numpy as np
+import math
+
+# Load dataset from CSV
+data = np.genfromtxt('/content/rare_elements.csv', delimiter=',', skip_header=1)
+
+# Remove missing values
+data = data[~np.isnan(data)]
+
+# User inputs
+sample_size = int(input("Enter sample size: "))
+confidence_level = float(input("Enter confidence level (e.g., 0.95): "))
+precision = float(input("Enter desired level of precision (E): "))
+
+# Take random sample
+sample = np.random.choice(data, sample_size, replace=False)
+
+# Point estimation (sample mean)
+sample_mean = np.mean(sample)
+
+# Sample standard deviation
+sample_std = np.std(sample, ddof=1)
+
+# Z-score based on confidence level
+if confidence_level == 0.90:
+    z = 1.645
+elif confidence_level == 0.95:
+    z = 1.96
+elif confidence_level == 0.99:
+    z = 2.576
+else:
+    z = 1.96   # default
+
+# Margin of error
+margin_error = z * (sample_std / math.sqrt(sample_size))
+
+# Confidence interval
+lower_bound = sample_mean - margin_error
+upper_bound = sample_mean + margin_error
+
+# Output
+print("\nPoint Estimate (Sample Mean):", sample_mean)
+print("Confidence Interval:")
+print("Lower Bound:", lower_bound)
+print("Upper Bound:", upper_bound)
+print("Desired Precision (E):", precision)
